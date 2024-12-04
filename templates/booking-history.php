@@ -83,19 +83,7 @@
     </div>
 </aside>
 
-<section class="container mt-8 px-4 mx-auto w-full h-full">
-    <div class="flex items-center gap-x-3">
-        <h2 class="text-lg font-medium text-gray-800">Historia e Rezervimeve</h2>
-
-        <span class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full">x Rezervime</span>
-    </div>
-
-    <div class="flex flex-col mt-6">
-        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                <div class="overflow-hidden border border-gray-200 md:rounded-lg">
-
-                <?php 
+<?php 
     $user_id = $_SESSION['user_id'];
 
     if (isset($_GET['cancel_booking_id'])) {
@@ -115,7 +103,6 @@
         }
     }
 
-    // Fetch the user's bookings
     $sql = "
         SELECT 
             b.booking_id, 
@@ -139,103 +126,112 @@
     $stmt->execute([':user_id' => $user_id]);
     $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Loop through each booking and check if it should be marked as completed
+    
     foreach ($bookings as $row) {
         $booking_time = strtotime($row['booking_date']);
         $current_time = time();
-        $duration = $row['duration']; // Duration in minutes
-
-        // Mark as completed if the booking duration has passed
+        $duration = $row['duration']; 
         if ($current_time >= $booking_time + ($duration * 60) && $row['status'] != 'Completed') {
-            // Update the booking status to "Completed"
             $update_sql = "UPDATE bookings SET status = 'Completed' WHERE booking_id = :booking_id";
             $update_stmt = $pdo->prepare($update_sql);
             $update_stmt->execute([':booking_id' => $row['booking_id']]);
         }
     }
 ?>
+<section class="container mt-8 px-4 mx-auto w-full h-full">
+    <div class="flex items-center gap-x-3">
+        <h2 class="text-lg font-medium text-gray-800">Historia e Rezervimeve</h2>
+        <span class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full">x Rezervime</span>
+    </div>
 
-<div class="container mx-auto p-6">
-    <h1 class="text-2xl font-bold text-center">Your Bookings</h1>
+    <div class="flex flex-col mt-6">
+        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                <div class="overflow-hidden border border-gray-200 md:rounded-lg">
 
-    <?php if (isset($cancel_message)): ?>
-        <div class="p-4 mb-4 text-green-800 bg-green-100 rounded-lg" role="alert">
-            <?= $cancel_message ?>
-        </div>
-    <?php endif; ?>
-
-    <?php if (isset($error_message)): ?>
-        <div class="p-4 mb-4 text-red-800 bg-red-100 rounded-lg" role="alert">
-            <?= $error_message ?>
-        </div>
-    <?php endif; ?>
-
-    <?php if (count($bookings) > 0): ?>
-        <table class="min-w-full divide-y divide-gray-200 mt-4">
-            <thead class="bg-gray-50">
+<?php if (count($bookings) > 0): ?>
+    <table class="min-w-full divide-y divide-gray-200 mt-4">
+        <thead>
+            <tr>
+                <th class="py-3.5 px-4 text-sm text-gray-500 w-1/6 text-center">ID</th>
+                <th class="py-3.5 px-4 text-sm text-gray-500 w-1/3 text-center">Name & Email</th>
+                <th class="py-3.5 px-4 text-sm text-gray-500 w-1/6 text-center">Service</th>
+                <th class="py-3.5 px-4 text-sm text-gray-500 w-1/6 text-center">Booking Date</th>
+                <th class="py-3.5 px-4 text-sm text-gray-500 w-1/6 text-center">Payment Method</th>
+                <th class="py-3.5 px-4 text-sm text-gray-500 w-1/6 text-center">Status</th>
+                
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            <?php foreach ($bookings as $row): ?>
                 <tr>
-                    <th class="py-3.5 px-4 text-sm text-gray-500">ID - Name</th>
-                    <th class="py-3.5 px-12 text-sm text-gray-500">Service</th>
-                    <th class="py-3.5 px-4 text-sm text-gray-500">Booking Date</th>
-                    <th class="py-3.5 px-4 text-sm text-gray-500">Payment Method</th>
-                    <th class="py-3.5 px-4 text-sm text-gray-500">Status</th>
-                    <th class="py-3.5 px-4 text-sm text-gray-500">Action</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                <?php foreach ($bookings as $row): ?>
-                    <tr>
-                        <td class="px-4 py-4 text-sm text-gray-700">
-                            <div class="inline-flex items-center gap-x-3">
-                                <span class="text-gray-800"><?= $row['booking_id'] ?></span>
-                                <div>
-                                    <h2 class="font-medium text-gray-800"><?= $row['fullname'] ?></h2>
-                                    <p class="text-sm text-gray-600"><?= $row['email'] ?></p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-12 py-4 text-sm text-gray-700">
-                            <div class="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60">
-                                <h2 class="text-sm text-emerald-500"><?= $row['service_name'] ?></h2>
-                            </div>
-                        </td>
-                        <td class="px-4 py-4 text-sm text-gray-500"><?= date("m/d/Y H:i", strtotime($row['booking_date'])) ?></td>
-                        <td class="px-4 py-4 text-sm text-gray-500"><?= $row['payment_method'] ?></td>
-                        <td class="px-4 py-4 text-sm">
-                            <?php
-                                $booking_time = strtotime($row['booking_date']);
-                                $current_time = time();
-                                $status = $row['status'];
+                    <!-- ID Column -->
+                    <td class="px-4 py-4 text-sm text-gray-700 text-center">
+                        <?= $row['booking_id'] ?>
+                    </td>
 
-                                if ($status == 'Cancelled') {
-                                    echo "<span class='px-3 py-1 text-xs text-white rounded-full bg-red-500'>Cancelled</span>";
-                                } elseif ($status == 'Completed') {
-                                    echo "<span class='px-3 py-1 text-xs text-white rounded-full bg-green-500'>Completed</span>";
-                                } elseif ($current_time >= $booking_time + ($row['duration'] * 60)) {
-                                    echo "<span class='px-3 py-1 text-xs text-white rounded-full bg-green-500'>Completed</span>";
-                                } elseif ($current_time >= $booking_time) {
-                                    echo "<span class='px-3 py-1 text-xs text-white rounded-full bg-blue-500'>In Progress</span>";
-                                } else {
-                                    echo "<span class='px-3 py-1 text-xs text-white rounded-full bg-yellow-500'>Pending</span>";
-                                }
-                            ?>
-                        </td>
-                        <td class="px-4 py-4 text-sm">
-                            <?php if ($status != 'Completed' && $status != 'Cancelled'): ?>
-                                <a href="?cancel_booking_id=<?= $row['booking_id'] ?>" class="text-gray-500 hover:text-red-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                    </svg>
-                                </a>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php else: ?>
-        <p class="text-center text-gray-500">No bookings found.</p>
-    <?php endif; ?>
+                    <!-- Full Name and Email Column -->
+                    <td class="px-4 py-4 text-sm text-gray-700 text-center">
+                        <div>
+                            <h2 class="font-medium text-gray-800"><?= $row['fullname'] ?></h2>
+                            <p class="text-sm text-gray-600"><?= $row['email'] ?></p>
+                        </div>
+                    </td>
+
+                    <!-- Service Column -->
+                    <td class="px-4 py-4 text-sm text-gray-700 text-center">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60">
+                            <h2 class="text-sm text-emerald-500"><?= $row['service_name'] ?></h2>
+                        </div>
+                    </td>
+
+                    <!-- Booking Date Column -->
+                    <td class="px-4 py-4 text-sm text-gray-500 text-center"><?= date("m/d/Y H:i", strtotime($row['booking_date'])) ?></td>
+
+                    <!-- Payment Method Column -->
+                    <td class="px-4 py-4 text-sm text-gray-500 text-center"><?= $row['payment_method'] ?></td>
+
+                    <!-- Status Column -->
+                    <td class="px-4 py-4 text-sm text-center">
+                        <?php
+                            $booking_time = strtotime($row['booking_date']);
+                            $current_time = time();
+                            $status = $row['status'];
+
+                            if ($status == 'Cancelled') {
+                                echo "<span class='px-3 py-1 text-xs text-white rounded-full bg-red-500'>Cancelled</span>";
+                            } elseif ($status == 'Completed') {
+                                echo "<span class='px-3 py-1 text-xs text-white rounded-full bg-green-500'>Completed</span>";
+                            } elseif ($current_time >= $booking_time + ($row['duration'] * 60)) {
+                                echo "<span class='px-3 py-1 text-xs text-white rounded-full bg-green-500'>Completed</span>";
+                            } elseif ($current_time >= $booking_time) {
+                                echo "<span class='px-3 py-1 text-xs text-white rounded-full bg-blue-500'>In Progress</span>";
+                            } else {
+                                echo "<span class='px-3 py-1 text-xs text-white rounded-full bg-yellow-500'>Pending</span>";
+                            }
+                        ?>
+                    </td>
+
+                    <!-- Action Column -->
+                    <td class="px-4 py-4 text-sm text-center">
+                        <?php if ($status != 'Completed' && $status != 'Cancelled'): ?>
+                            <a href="?cancel_booking_id=<?= $row['booking_id'] ?>" class="text-gray-500 hover:text-red-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                </svg>
+                            </a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php else: ?>
+    <p class="text-center text-gray-500">No bookings found.</p>
+<?php endif; ?>
+
+
+</div>
 </div>
 </div>
             </div>
