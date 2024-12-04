@@ -135,11 +135,21 @@ $userId = $_SESSION['user_id'];
             </div>
         </div>
         
+        <?php
+            $user_id = $_SESSION['user_id'];
 
+            
+            $sql = "SELECT COUNT(*) AS booking_count FROM bookings WHERE status = 'Completed' AND user_id = :user_id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([':user_id' => $user_id]);
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $booking_count = $result['booking_count'];
+        ?>
         <div class="bg-white rounded-xl shadow-lg p-6 h-64 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl animate-slide-up" style="animation-delay: 0.2s">
             <h3 class="text-xl font-bold text-indigo-800">Makinat e Lara</h3>
             <p class="mt-4 text-sm text-gray-600">View all the washed cars and manage their details.</p>
-            <h1 class="text-center text-6xl font-bold mt-4">?</h1>
+            <h1 class="text-center text-6xl font-bold mt-4"><?= $booking_count; ?></h1>
             <div class="flex justify-center items-center mt-6">
                 <button class="px-6 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600">
                 <a href="../templates/booking-history.php">View Cars</a></button>
