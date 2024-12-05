@@ -1,13 +1,40 @@
-<?php 
+<?php
 session_start();
-include '../includes/db.php'; 
+include '../includes/db.php';
 
-if(isset($_SESSION['isloggedin'])){
-    if($_SESSION['isloggedin'] == true){
-        header('Location:../templates/dashboard.php');
+if (isset($_POST['login_btn'])) {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Query to check if the email exists in the 'users' table
+    $sql = "SELECT * FROM `users` WHERE `email` = ? LIMIT 1";
+    $stm = $pdo->prepare($sql);
+
+    if ($stm->execute([$email])) {
+        $user = $stm->fetch(PDO::FETCH_ASSOC);
+
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['email'] = $email;
+            $_SESSION['isloggedin'] = true;
+            $_SESSION['role'] = $user['role'];
+
+            // Redirect based on role
+            if ($_SESSION['role'] === 'admin') {
+                header('Location: ../admin/dashboard.php');
+            } else {
+                header('Location: ../templates/dashboard.php');
+            }
+            exit();
+        } else {
+            echo "<p style='color: red;'>Invalid credentials</p>";
+        }
+    } else {
+        echo "<p style='color: red;'>Unable to process the request</p>";
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

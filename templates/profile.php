@@ -1,21 +1,24 @@
 <?php
-    include '../includes/db.php';
-    session_start();
-    
-    if(!isset($_SESSION['isloggedin']) or ($_SESSION['isloggedin'] != true)){
-            header('Location: ../public/login.php');
-        }
+session_start();
+include '../includes/db.php';
 
-    if(isset($_GET['action'])){
-        if($_GET['action'] == 'signout'){
-            unset($_SESSION['email']);
-            unset($_SESSION['isloggedin']);
+// Ensure the user is logged in and has the 'customer' role
+if (!isset($_SESSION['isloggedin']) || $_SESSION['isloggedin'] !== true || $_SESSION['role'] !== 'customer') {
+    session_destroy();
+    header('Location: ../public/login.php');
+    exit();
+}
 
-            session_destroy();
-            header('Location: ../public/login.php');
-        }
-    }
+// Page content for customers here
+
+// Signout functionality
+if (isset($_GET['action']) && $_GET['action'] == 'signout') {
+    session_destroy();
+    header('Location: ../public/login.php');
+    exit();
+}
 ?>
+
 
 
 <!DOCTYPE html>

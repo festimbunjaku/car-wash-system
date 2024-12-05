@@ -1,21 +1,27 @@
 <?php
-    include '../includes/db.php';
-    session_start();
-    
-    if(!isset($_SESSION['isloggedin']) or ($_SESSION['isloggedin'] != true)){
-            header('Location: ../public/login.php');
-        }
+session_start();
+include '../includes/db.php';
 
-    if(isset($_GET['action'])){
-        if($_GET['action'] == 'signout'){
-            unset($_SESSION['email']);
-            unset($_SESSION['isloggedin']);
+// Ensure the user is logged in and has the 'customer' role
+if (!isset($_SESSION['isloggedin']) || $_SESSION['isloggedin'] !== true || $_SESSION['role'] !== 'customer') {
+    session_destroy();
+    header('Location: ../public/login.php');
+    exit();
+}
 
-            session_destroy();
-            header('Location: ../public/login.php');
-        }
-    }
+// Page content for customers here
+
+// Signout functionality
+if (isset($_GET['action']) && $_GET['action'] == 'signout') {
+    session_destroy();
+    header('Location: ../public/login.php');
+    exit();
+}
 ?>
+
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -84,64 +90,73 @@
 </aside>
 
 <?php 
-    $user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'];
 
-    if (isset($_GET['cancel_booking_id'])) {
-        $cancel_booking_id = filter_input(INPUT_GET, 'cancel_booking_id', FILTER_VALIDATE_INT);
+if (isset($_GET['cancel_booking_id'])) {
+    $cancel_booking_id = filter_input(INPUT_GET, 'cancel_booking_id', FILTER_VALIDATE_INT);
+    
+    if ($cancel_booking_id) {
+        // Update the booking to "Cancelled"
+        $sql = "UPDATE bookings SET status = 'Cancelled' WHERE booking_id = :booking_id AND user_id = :user_id";
+        $stmt = $pdo->prepare($sql);
         
-        if ($cancel_booking_id) {
-            $sql = "UPDATE bookings SET status = 'Cancelled' WHERE booking_id = :booking_id AND user_id = :user_id";
-            $stmt = $pdo->prepare($sql);
-            
-            if ($stmt->execute([':booking_id' => $cancel_booking_id, ':user_id' => $user_id])) {
-                $cancel_message = "Booking cancelled successfully!";
-            } else {
-                $error_message = "Error updating the booking status.";
-            }
+        if ($stmt->execute([':booking_id' => $cancel_booking_id, ':user_id' => $user_id])) {
+            $cancel_message = "Booking cancelled successfully!";
         } else {
-            $error_message = "Invalid booking ID.";
+            $error_message = "Error updating the booking status.";
         }
+    } else {
+        $error_message = "Invalid booking ID.";
+    }
+}
+
+// Fetch all bookings for the user
+$sql = "
+    SELECT 
+        b.booking_id, 
+        b.user_id, 
+        b.service_id, 
+        b.booking_date, 
+        b.status, 
+        u.fullname, 
+        u.email, 
+        s.name AS service_name, 
+        s.duration, 
+        p.payment_method
+    FROM bookings b
+    JOIN users u ON b.user_id = u.id
+    JOIN services s ON b.service_id = s.service_id
+    LEFT JOIN payments p ON b.booking_id = p.booking_id
+    WHERE b.user_id = :user_id
+";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute([':user_id' => $user_id]);
+$bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Update time-based status
+foreach ($bookings as $row) {
+    $booking_time = strtotime($row['booking_date']);
+    $current_time = time();
+    $duration = $row['duration'];
+
+    // Skip updates if the booking is already cancelled
+    if ($row['status'] == 'Cancelled') {
+        continue;
     }
 
-    $sql = "
-        SELECT 
-            b.booking_id, 
-            b.user_id, 
-            b.service_id, 
-            b.booking_date, 
-            b.status, 
-            u.fullname, 
-            u.email, 
-            s.name AS service_name, 
-            s.duration, 
-            p.payment_method
-        FROM bookings b
-        JOIN users u ON b.user_id = u.id
-        JOIN services s ON b.service_id = s.service_id
-        LEFT JOIN payments p ON b.booking_id = p.booking_id
-        WHERE b.user_id = :user_id
-    ";
-    
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([':user_id' => $user_id]);
-    $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    
-    foreach ($bookings as $row) {
-        $booking_time = strtotime($row['booking_date']);
-        $current_time = time();
-        $duration = $row['duration']; 
-        if ($current_time >= $booking_time + ($duration * 60) && $row['status'] != 'Completed') {
-            $update_sql = "UPDATE bookings SET status = 'Completed' WHERE booking_id = :booking_id";
-            $update_stmt = $pdo->prepare($update_sql);
-            $update_stmt->execute([':booking_id' => $row['booking_id']]);
-        }
+    // Mark as "Completed" if time has elapsed
+    if ($current_time >= $booking_time + ($duration * 60) && $row['status'] != 'Completed') {
+        $update_sql = "UPDATE bookings SET status = 'Completed' WHERE booking_id = :booking_id";
+        $update_stmt = $pdo->prepare($update_sql);
+        $update_stmt->execute([':booking_id' => $row['booking_id']]);
     }
+}
 ?>
 <section class="container mt-8 px-4 mx-auto w-full h-full">
     <div class="flex items-center gap-x-3">
         <h2 class="text-lg font-medium text-gray-800">Historia e Rezervimeve</h2>
-        <span class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full">x Rezervime</span>
+        <span class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full"><?= count($bookings) ?>  Rezervime</span>
     </div>
 
     <div class="flex flex-col mt-6">
