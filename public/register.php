@@ -26,21 +26,21 @@ if(isset($_SESSION['isloggedin'])){
             </a>
 
             <div class="flex items-center mt-2 -mx-2 sm:mt-0">
-                <a href="./login.php" class="px-3 py-2 mx-2 text-sm font-semibold text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Kyqu</a>
-                <a href="./register.php" class="px-3 py-2 mx-1 text-sm font-semibold text-indigo-600 border-2 border-indigo-600 rounded-md hover:bg-indigo-100">Regjistrohu</a>
+                <a href="./login.php" class="px-3 py-2 mx-2 text-sm font-semibold text-white bg-indigo-600 rounded-md hover:bg-indigo-700">Log in</a>
+                <a href="./register.php" class="px-3 py-2 mx-1 text-sm font-semibold text-indigo-600 border-2 border-indigo-600 rounded-md hover:bg-indigo-100">Register</a>
             </div>
         </nav>
 
         <div class="flex flex-col justify-between items-center py-6 lg:h-[36rem] lg:flex-row">
             <div class="lg:w-1/2">
-                <h2 class="text-3xl font-semibold text-gray-800 lg:text-4xl">Autolarje</h2>
+                <h2 class="text-3xl font-semibold text-gray-800 lg:text-4xl">Car Wash</h2>
 
                 <h3 class="mt-2 text-2xl font-semibold text-gray-800">
-                    Përshëndetje <span class="text-indigo-600">Mik</span>
+                    Hi <span class="text-indigo-600">User</span>
                 </h3>
 
                 <p class="mt-4 text-gray-600">
-                    Për të rezervuar një larje makine, ju lutem regjistrohuni duke plotësuar të dhënat tuaja më poshtë. Shërbimet tona të cilësisë së lartë dhe procesi i thjeshtë i regjistrimit ju ndihmojnë të kurseni kohë!
+                To reserve a car wash, please register by filling out your details below. Our high-quality services and simple registration process help you save time!
                 </p>
             </div>
 
@@ -53,8 +53,8 @@ if(isset($_SESSION['isloggedin'])){
                             </svg>
                         </span>
                     </div>
-                    <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Krijo një llogari të re</h2>
-                    <p class="text-gray-600 text-center mb-6">Vendosni të dhënat tuaja për t'u regjistruar.</p>
+                    <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Create a New Account</h2>
+                    <p class="text-gray-600 text-center mb-6">Enter your details to sign up.</p>
 
                     <?php
                         if (isset($_POST['login_btn'])) {
@@ -75,20 +75,22 @@ if(isset($_SESSION['isloggedin'])){
 
                     <form method="POST" action="<?php $_SERVER['PHP_SELF'] ?>">
                         <div class="mb-4">
-                            <label for="fullName" class="block text-gray-700 text-sm font-semibold mb-2">Emri i Plotë *</label>
+                            <label for="fullName" class="block text-gray-700 text-sm font-semibold mb-2">Full Name *</label>
                             <input type="text" name="fullname" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:ring-indigo-100 focus:border-indigo-500" required placeholder="James Brown">
                         </div>
                         <div class="mb-4">
-                            <label for="email" class="block text-gray-700 text-sm font-semibold mb-2">Adresa e Email-it *</label>
-                            <input type="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:ring-indigo-100 focus:border-indigo-500" required placeholder="emailijuaj@gmail.com">
+                            <label for="email" class="block text-gray-700 text-sm font-semibold mb-2">Your E-Mail Adress *</label>
+                            <input type="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:ring-indigo-100 focus:border-indigo-500" required placeholder="youremail@gmail.com">
                         </div>
                         <div class="mb-6">
-                            <label for="password" class="block text-gray-700 text-sm font-semibold mb-2">Fjalëkalimi *</label>
+                            <label for="password" class="block text-gray-700 text-sm font-semibold mb-2">Password *</label>
                             <input type="password" name="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:ring-indigo-100 focus:border-indigo-500" required placeholder="••••••••">
                         </div>
-                        <button type="submit" name="login_btn" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">Regjistrohu</button>
+                        <button type="submit" name="login_btn" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">Register</button>
                         <p class="text-gray-600 text-xs text-center mt-4">
-                            Duke klikuar Regjistrohu, ju pranoni <a href="#" class="text-indigo-600 hover:underline">Termat dhe Kushtet</a>.
+                        By clicking Register, you agree to the 
+<a href="#" class="text-indigo-600 hover:underline">Terms and Conditions.
+</a>.
                         </p>
                     </form>
                 </div>
