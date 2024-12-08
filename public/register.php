@@ -33,14 +33,14 @@ if(isset($_SESSION['isloggedin'])){
 
         <div class="flex flex-col justify-between items-center py-6 lg:h-[36rem] lg:flex-row">
             <div class="lg:w-1/2">
-                <h2 class="text-3xl font-semibold text-gray-800 lg:text-4xl">Car Wash</h2>
+                <h2 class="text-3xl mb-6 font-semibold text-gray-800 lg:text-4xl">Car Wash Management System</h2>
 
                 <h3 class="mt-2 text-2xl font-semibold text-gray-800">
                 <span class="text-indigo-600">Welcome!</span> Register to reserve your first car wash.
                 
                 </h3>
 
-                <p class="mt-4 text-gray-600">
+                <p class="mt-2 text-gray-600">
                 To reserve a car wash, please register by filling out your details below. Our high-quality services and simple registration process help you save time!
                 </p>
             </div>
