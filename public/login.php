@@ -59,14 +59,14 @@ if (isset($_POST['login_btn'])) {
             <div class="lg:w-1/2">
                 <h2 class="text-3xl font-semibold text-gray-800 lg:text-4xl">Car Wash Management System</h2>
                 <h3 class="mt-2 text-2xl font-semibold text-gray-800">
-                    Hi <span class="text-indigo-600">User</span>
+                Hello, ready to <span class="text-indigo-600">book</span> your car wash? 
                 </h3>
                 <p class="mt-4 text-gray-600">
                 To reserve a car wash, please log in first. Our easy-to-use system helps you choose a convenient time for your car wash. Register now and take advantage of our fast and high-quality services!
                 </p>
             </div>
 
-            <div class="lg:w-1/2 flex justify-center">
+            <div class=" flex justify-center">
                 <div class="max-w-sm w-full p-8 shadow rounded-lg">
                     <div class="text-center">
                         <h1 class="text-3xl font-semibold text-gray-800 mb-4">Log in</h1>

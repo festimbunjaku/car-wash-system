@@ -36,7 +36,8 @@ if(isset($_SESSION['isloggedin'])){
                 <h2 class="text-3xl font-semibold text-gray-800 lg:text-4xl">Car Wash</h2>
 
                 <h3 class="mt-2 text-2xl font-semibold text-gray-800">
-                    Hi <span class="text-indigo-600">User</span>
+                <span class="text-indigo-600">Welcome!</span> Register to reserve your first car wash.
+                
                 </h3>
 
                 <p class="mt-4 text-gray-600">
