@@ -154,7 +154,7 @@ $userId = $_SESSION['user_id'];
             $user_count = $result['user_count'];
         ?>
         <div class="bg-white rounded-xl shadow-lg p-6 h-64 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl animate-slide-up" style="animation-delay: 0.2s">
-            <h3 class="text-xl font-bold text-indigo-800">Perdoruesi</h3>
+            <h3 class="text-xl font-bold text-indigo-800">Users</h3>
             <p class="mt-4 text-sm text-gray-600">View all users and see their details.</p>
             <h1 class="text-center text-6xl font-bold mt-4"><?= $user_count; ?></h1>
             <div class="flex justify-center items-center mt-6">
