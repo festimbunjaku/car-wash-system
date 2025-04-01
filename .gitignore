@@ -1,0 +1,58 @@
+# Ignore PHP configuration files
+php.ini
+.htaccess
+
+# Ignore vendor directories
+/vendor/
+/node_modules/
+
+# Ignore environment files
+.env
+.env.local
+.env.*.local
+
+# Ignore logs
+/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore operating system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
+
+# Ignore IDE and editor files
+/.idea/
+/.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# Ignore build files
+/build/
+/dist/
+/public/build/
+
+# Ignore user uploads
+/uploads/
+/media/
+
+# Ignore compiled CSS and JS
+/public/css/
+/public/js/
+
+# Ignore database dumps
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+
+# Ignore config with sensitive information
+/includes/config.php
